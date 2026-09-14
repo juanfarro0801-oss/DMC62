@@ -29,7 +29,56 @@ if seccion == "Home":
     st.write("- Streamlit")
 
 elif seccion == "Ejercicio 1":
-    st.write("Estás en el Ejercicio 1")
+    st.title("Ejercicio 1: Flujo de caja con listas")
+    st.write("Registra tus movimientos financieros (ingresos o gastos):")
+
+    # Inicializar lista en la memoria de la sesión [cite: 1]
+    if "movimientos" not in st.session_state:
+        st.session_state.movimientos = []
+
+    # Widgets para ingresar datos [cite: 1]
+    concepto = st.text_input("Ingresa el concepto del movimiento")
+    tipo = st.selectbox("Selecciona el tipo de movimiento", ["Ingreso", "Gasto"])
+    valor = st.number_input("Ingresa el valor", min_value=0.0, step=10.0)
+
+    # Botón para agregar a la lista [cite: 1]
+    if st.button("Agregar movimiento"):
+        if concepto.strip() != "":
+            st.session_state.movimientos.append({
+                "Concepto": concepto,
+                "Tipo": tipo,
+                "Valor": valor
+            })
+            st.success(f"Movimiento '{concepto}' agregado correctamente.")
+        else:
+            st.warning("Por favor, ingresa un concepto válido.")
+
+    # Mostrar la lista de movimientos registrados [cite: 1]
+    st.write("### Historial de movimientos")
+    if len(st.session_state.movimientos) > 0:
+        st.write(st.session_state.movimientos)
+
+        # Calcular totales [cite: 1]
+        total_ingresos = sum(item["Valor"] for item in st.session_state.movimientos if item["Tipo"] == "Ingreso")
+        total_gastos = sum(item["Valor"] for item in st.session_state.movimientos if item["Tipo"] == "Gasto")
+        saldo_final = total_ingresos - total_gastos
+
+        st.write(f"**Total Ingresos:** S/. {total_ingresos}")
+        st.write(f"**Total Gastos:** S/. {total_gastos}")
+        st.write(f"**Saldo Final:** S/. {saldo_final}")
+
+        # Indicar si está a favor o en contra [cite: 1]
+        if saldo_final >= 0:
+            st.success("El flujo de caja está: **A favor**")
+        else:
+            st.error("El flujo de caja está: **En contra**")
+
+        # Botón opcional para limpiar la lista
+        if st.button("Limpiar registros"):
+            st.session_state.movimientos = []
+            st.rerun()
+    else:
+        st.info("Aún no hay movimientos registrados.")
 
 elif seccion == "Ejercicio 2":
     st.write("Estás en el Ejercicio 2")
