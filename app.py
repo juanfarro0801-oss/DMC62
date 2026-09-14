@@ -12,9 +12,9 @@ st.write("Elaborado por: Carlos Carrillo")
 
  
 
-st.image("Python_logo.png",width =300)
+st.image("Python.png",width =300)
 
-st.sidebar.image("DMC.png")
+st.sidebar.image("DMC Logo.png")
 
  
 
