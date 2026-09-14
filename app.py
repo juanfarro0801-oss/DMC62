@@ -1,5 +1,7 @@
 import streamlit as st
 
+import numpy as np
+
  
 
 st.title("Especialización Python for Analytics")
@@ -7,6 +9,14 @@ st.title("Especialización Python for Analytics")
 st.sidebar.title("Parámetros")
 
 st.write("Elaborado por: Carlos Carrillo")
+
+ 
+
+st.image("Python_logo.png",width =300)
+
+st.sidebar.image("DMC.png")
+
+ 
 
  
 
@@ -37,6 +47,18 @@ if modulos == "Listas":
 elif modulos == "Arreglos":
 
   st.write("Te encuentras en el módulo de arreglos")
+
+ 
+
+  cantidad = st.slider("Seleccione un valor del rango", min_value = 1, max_value = 100, value=20 )
+
+  arreglo = np.arange(cantidad)
+
+ 
+
+  st.write(arreglo)
+
+ 
 
  
 
