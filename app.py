@@ -32,7 +32,7 @@ elif seccion == "Ejercicio 1":
     st.title("Ejercicio 1 – Flujo de caja con listas")
     
     # Breve descripción del ejercicio con st.markdown() [cite: 1]
-    st.markdown("Este módulo permite registrar movimientos financieros (ingresos y gastos) en una lista vacía para calcular el flujo de caja [cite: 1].")
+    st.markdown("Este módulo permite registrar movimientos financieros (ingresos y gastos) en una lista vacía para calcular el flujo de caja")
 
     # Inicializar la lista en session_state [cite: 1]
     if "movimientos" not in st.session_state:
@@ -54,7 +54,7 @@ elif seccion == "Ejercicio 1":
 
     # Mostrar la tabla de movimientos [cite: 1]
     if len(st.session_state.movimientos) > 0:
-        st.markdown("### Tabla de movimientos registrados [cite: 1]")
+        st.markdown("### Tabla de movimientos registrados")
         st.dataframe(st.session_state.movimientos)
 
         # Cálculos de totales y saldo final [cite: 1]
@@ -70,9 +70,9 @@ elif seccion == "Ejercicio 1":
 
         # Indicador de estado del flujo de caja [cite: 1]
         if saldo_final >= 0:
-            st.success("El flujo de caja está: **a favor** [cite: 1]")
+            st.success("El flujo de caja está: **a favor**")
         else:
-            st.error("El flujo de caja está: **en contra** [cite: 1]")
+            st.error("El flujo de caja está: **en contra**")
             
         if st.button("Limpiar registros"):
             st.session_state.movimientos = []
