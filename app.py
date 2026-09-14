@@ -14,8 +14,9 @@ seccion = st.sidebar.selectbox(
 # 1. HOME (PRESENTACIÓN)
 # ==========================================
 if seccion == "Home":
-    st.title("Especialización Python for Analytics")
-    st.subheader("Módulo 1 – Python Fundamentals")
+    st.title("Proyecto Módulo 1 - Python for Analytics")
+
+    
     
     # Información general del estudiante (Modifica con tus datos)
     st.write("**Elaborado por:** Juan Diego [Escribe aquí tu nombre completo]")
@@ -26,16 +27,11 @@ if seccion == "Home":
     with col_img1:
         try:
             st.image("Python.png", width=250)
-        except Exception:
-            st.info("Imagen Python.png no encontrada en el directorio.")
     with col_img2:
         try:
             st.image("DMC Logo.png", width=250)
-        except Exception:
-            st.info("Imagen DMC Logo.png no encontrada en el directorio.")
+
             
-    st.markdown("---")
-    st.markdown("""
     ### 📌 Breve descripción del proyecto
     Esta aplicación interactiva integra los conceptos fundamentales de programación en Python desarrollados en el **Módulo 1**:
     * **Ejercicio 1:** Flujo de caja utilizando estructuras de listas [cite: 1].
