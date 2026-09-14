@@ -14,9 +14,10 @@ seccion = st.sidebar.selectbox(
 if seccion == "Home":
     st.title("Proyecto Módulo 1 – Python Fundamentals")
     
-    st.write("Elaborado por: Juan Diego [Escribe tus apellidos]")
-    st.write("Módulo: Módulo 1 – Python Fundamentals")
-    st.write("Año: 2026")
+    st.write("Elaborado por: Juan Diego Farro Taza")
+    st.write("Módulo: Home")
+    st.write("Módulo: Bachiller en Ingenieria en Gestion Empresarial")
+    st.write("Año: 2026")    
     
     st.image("Python.png", width=300)
     
