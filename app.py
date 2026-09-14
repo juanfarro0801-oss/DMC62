@@ -2,15 +2,9 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 
-# Configuración general de la página
-st.set_page_config(
-    page_title="Proyecto Módulo 1 - Python for Analytics",
-    page_icon="📊",
-    layout="wide"
-)
+st.title("Especialización Python for Analytics")
 
-# Menú lateral obligatorio según la rúbrica [cite: 1]
-st.sidebar.title("Menú de Navegación")
+# Menú lateral
 seccion = st.sidebar.selectbox(
     "Seleccione el módulo",
     ["Home", "Ejercicio 1", "Ejercicio 2", "Ejercicio 3", "Ejercicio 4"]
