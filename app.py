@@ -29,51 +29,51 @@ if seccion == "Home":
     st.write("- Streamlit")
 
 elif seccion == "Ejercicio 1":
-    st.title("Ejercicio 1: Flujo de caja con listas")
-    st.write("Registra tus movimientos financieros (ingresos o gastos):")
+    st.title("Ejercicio 1 – Flujo de caja con listas")
+    
+    # Breve descripción del ejercicio con st.markdown() [cite: 1]
+    st.markdown("Este módulo permite registrar movimientos financieros (ingresos y gastos) en una lista vacía para calcular el flujo de caja [cite: 1].")
 
-    # Inicializar lista en la memoria de la sesión [cite: 1]
+    # Inicializar la lista en session_state [cite: 1]
     if "movimientos" not in st.session_state:
         st.session_state.movimientos = []
 
-    # Widgets para ingresar datos [cite: 1]
-    concepto = st.text_input("Ingresa el concepto del movimiento")
-    tipo = st.selectbox("Selecciona el tipo de movimiento", ["Ingreso", "Gasto"])
-    valor = st.number_input("Ingresa el valor", min_value=0.0, step=10.0)
+    # Widgets para ingresar los datos [cite: 1]
+    concepto = st.text_input("Concepto del movimiento")
+    tipo = st.selectbox("Tipo de movimiento", ["Ingreso", "Gasto"])
+    valor = st.number_input("Valor", min_value=0.0, step=10.0)
 
-    # Botón para agregar a la lista [cite: 1]
+    # Botón para agregar movimientos [cite: 1]
     if st.button("Agregar movimiento"):
-        if concepto.strip() != "":
+        if concepto.strip():
             st.session_state.movimientos.append({
                 "Concepto": concepto,
                 "Tipo": tipo,
                 "Valor": valor
             })
-            st.success(f"Movimiento '{concepto}' agregado correctamente.")
-        else:
-            st.warning("Por favor, ingresa un concepto válido.")
 
-    # Mostrar la lista de movimientos registrados [cite: 1]
-    st.write("### Historial de movimientos")
+    # Mostrar la tabla de movimientos [cite: 1]
     if len(st.session_state.movimientos) > 0:
-        st.write(st.session_state.movimientos)
+        st.markdown("### Tabla de movimientos registrados [cite: 1]")
+        st.dataframe(st.session_state.movimientos)
 
-        # Calcular totales [cite: 1]
-        total_ingresos = sum(item["Valor"] for item in st.session_state.movimientos if item["Tipo"] == "Ingreso")
-        total_gastos = sum(item["Valor"] for item in st.session_state.movimientos if item["Tipo"] == "Gasto")
+        # Cálculos de totales y saldo final [cite: 1]
+        total_ingresos = sum(m["Valor"] for m in st.session_state.movimientos if m["Tipo"] == "Ingreso")
+        total_gastos = sum(m["Valor"] for m in st.session_state.movimientos if m["Tipo"] == "Gasto")
         saldo_final = total_ingresos - total_gastos
 
-        st.write(f"**Total Ingresos:** S/. {total_ingresos}")
-        st.write(f"**Total Gastos:** S/. {total_gastos}")
-        st.write(f"**Saldo Final:** S/. {saldo_final}")
+        # Resultado final del flujo de caja con st.metric [cite: 1]
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Total Ingresos", f"S/. {total_ingresos:,.2f}")
+        col2.metric("Total Gastos", f"S/. {total_gastos:,.2f}")
+        col3.metric("Saldo Final", f"S/. {saldo_final:,.2f}")
 
-        # Indicar si está a favor o en contra [cite: 1]
+        # Indicador de estado del flujo de caja [cite: 1]
         if saldo_final >= 0:
-            st.success("El flujo de caja está: **A favor**")
+            st.success("El flujo de caja está: **a favor** [cite: 1]")
         else:
-            st.error("El flujo de caja está: **En contra**")
-
-        # Botón opcional para limpiar la lista
+            st.error("El flujo de caja está: **en contra** [cite: 1]")
+            
         if st.button("Limpiar registros"):
             st.session_state.movimientos = []
             st.rerun()
