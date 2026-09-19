@@ -5,7 +5,7 @@ st.title("Especialización Python for Analytics")
 st.sidebar.title("Parámetros")
 st.sidebar.image("DMC Logo.png")
 
-# Menú lateral obligatorio según la guía [cite: 1]
+# Menú lateral
 seccion = st.sidebar.selectbox(
     "Seleccione el módulo",
     ["Home", "Ejercicio 1", "Ejercicio 2", "Ejercicio 3", "Ejercicio 4"]
@@ -31,19 +31,16 @@ if seccion == "Home":
 elif seccion == "Ejercicio 1":
     st.title("Ejercicio 1 – Flujo de caja con listas")
     
-    # Breve descripción del ejercicio con st.markdown() [cite: 1]
     st.markdown("Este módulo permite registrar movimientos financieros (ingresos y gastos) en una lista vacía para calcular el flujo de caja")
 
-    # Inicializar la lista en session_state [cite: 1]
     if "movimientos" not in st.session_state:
         st.session_state.movimientos = []
 
-    # Widgets para ingresar los datos [cite: 1]
-    concepto = st.text_input("Concepto del movimiento")
+    concepto = st.text_input("Concepto del movimiento. Ejemplo: Pasajes, servicios, sueldo,")
     tipo = st.selectbox("Tipo de movimiento", ["Ingreso", "Gasto"])
     valor = st.number_input("Valor", min_value=0.0, step=10.0)
 
-    # Botón para agregar movimientos [cite: 1]
+    # Botón para agregar movimientos
     if st.button("Agregar movimiento"):
         if concepto.strip():
             st.session_state.movimientos.append({
@@ -52,23 +49,23 @@ elif seccion == "Ejercicio 1":
                 "Valor": valor
             })
 
-    # Mostrar la tabla de movimientos [cite: 1]
+    # Mostrar la tabla de movimientos
     if len(st.session_state.movimientos) > 0:
         st.markdown("### Tabla de movimientos registrados")
         st.dataframe(st.session_state.movimientos)
 
-        # Cálculos de totales y saldo final [cite: 1]
+        # Cálculos de totales y saldo final
         total_ingresos = sum(m["Valor"] for m in st.session_state.movimientos if m["Tipo"] == "Ingreso")
         total_gastos = sum(m["Valor"] for m in st.session_state.movimientos if m["Tipo"] == "Gasto")
         saldo_final = total_ingresos - total_gastos
 
-        # Resultado final del flujo de caja con st.metric [cite: 1]
+        # Resultado final del flujo de caja con st.metric
         col1, col2, col3 = st.columns(3)
         col1.metric("Total Ingresos", f"S/. {total_ingresos:,.2f}")
         col2.metric("Total Gastos", f"S/. {total_gastos:,.2f}")
         col3.metric("Saldo Final", f"S/. {saldo_final:,.2f}")
 
-        # Indicador de estado del flujo de caja [cite: 1]
+        # Indicador de estado del flujo de caja
         if saldo_final >= 0:
             st.success("El flujo de caja está: **a favor**")
         else:
