@@ -174,33 +174,32 @@ elif seccion == "Ejercicio 4":
 # --- 1. CREAR ---
     with tab_crear:
         st.subheader("Registrar nuevo producto en inventario")
-        nombre_prod = st.text_input("Nombre del producto", key="crear_nombre")
-        costo_prod = st.number_input("Costo unitario", min_value=0.0, value=10.0, step=1.0, key="crear_costo")
-        precio_prod = st.number_input("Precio unitario", min_value=0.0, value=15.0, step=1.0, key="crear_precio")
-        stock_act = st.number_input("Stock actual", min_value=0, value=50, step=1, key="crear_stock")
-        stock_min = st.number_input("Stock mínimo", min_value=0, value=10, step=1, key="crear_min")
+        
+        with st.form("form_crear_producto", clear_on_submit=True):
+            nombre_prod = st.text_input("Nombre del producto")
+            costo_prod = st.number_input("Costo unitario", min_value=0.0, value=10.0, step=1.0)
+            precio_prod = st.number_input("Precio unitario", min_value=0.0, value=15.0, step=1.0)
+            stock_act = st.number_input("Stock actual", min_value=0, value=50, step=1)
+            stock_min = st.number_input("Stock mínimo", min_value=0, value=10, step=1)
 
-        if st.button("Guardar Producto"):
-            if nombre_prod.strip():
-                try:
-                    # Instanciar la clase de la librería externa
-                    producto_obj = lc.InventarioProducto(nombre_prod, costo_prod, precio_prod, stock_act, stock_min)
-                    
-                    # Guardar el objeto y su resumen en el session_state
-                    st.session_state.inventario_crud.append({
-                        "objeto": producto_obj,
-                        **producto_obj.resumen()
-                    })
-                    
-                    # Mensaje de éxito
-                    st.success(f"Producto '{nombre_prod}' creado correctamente.")
-                    
-                    # Limpia los campos recargando la aplicación al instante
-                    st.rerun()
-                except Exception as e:
-                    st.error(f"Error al validar los datos: {e}")
-            else:
-                st.warning("El nombre del producto no puede estar vacío.")
+            btn_guardar = st.form_submit_button("Guardar Producto")
+
+            if btn_guardar:
+                if nombre_prod.strip():
+                    try:
+                        # Instanciar la clase de la librería externa
+                        producto_obj = lc.InventarioProducto(nombre_prod, costo_prod, precio_prod, stock_act, stock_min)
+                        
+                        # Guardar el objeto y su resumen en el session_state
+                        st.session_state.inventario_crud.append({
+                            "objeto": producto_obj,
+                            **producto_obj.resumen()
+                        })
+                        st.success(f"Producto '{nombre_prod}' creado correctamente.")
+                    except Exception as e:
+                        st.error(f"Error al validar los datos: {e}")
+                else:
+                    st.warning("El nombre del producto no puede estar vacío.")
 
     # --- 2. LEER ---
     with tab_leer:
