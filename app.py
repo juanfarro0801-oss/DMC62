@@ -183,7 +183,7 @@ elif seccion == "Ejercicio 4":
         if st.button("Guardar Producto"):
             if nombre_prod.strip():
                 try:
-                    # Instanciar la clase de la librería
+                    # Instanciar la clase de la librería externa
                     producto_obj = lc.InventarioProducto(nombre_prod, costo_prod, precio_prod, stock_act, stock_min)
                     
                     # Guardar el objeto y su resumen en el session_state
@@ -192,6 +192,9 @@ elif seccion == "Ejercicio 4":
                         **producto_obj.resumen()
                     })
                     st.success(f"Producto '{nombre_prod}' creado correctamente.")
+                    
+                    # Limpia los inputs recargando la aplicación de forma inmediata
+                    st.rerun()
                 except Exception as e:
                     st.error(f"Error al validar los datos: {e}")
             else:
