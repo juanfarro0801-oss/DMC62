@@ -172,7 +172,7 @@ elif seccion == "Ejercicio 4":
     tab_crear, tab_leer, tab_actualizar, tab_eliminar = st.tabs(["Crear", "Leer", "Actualizar", "Eliminar"])
 
     # --- 1. CREAR ---
-    with tab_crear:
+with tab_crear:
         st.subheader("Registrar nuevo producto en inventario")
         nombre_prod = st.text_input("Nombre del producto", key="crear_nombre")
         costo_prod = st.number_input("Costo unitario", min_value=0.0, value=10.0, step=1.0, key="crear_costo")
