@@ -36,7 +36,7 @@ elif seccion == "Ejercicio 1":
     if "movimientos" not in st.session_state:
         st.session_state.movimientos = []
 
-    concepto = st.text_input("Concepto del movimiento. Ejemplo: Pasajes, servicios, sueldo,")
+    concepto = st.text_input("Concepto del movimiento. Ejemplo: Pasajes, servicios, sueldo, etc.")
     tipo = st.selectbox("Tipo de movimiento", ["Ingreso", "Gasto"])
     valor = st.number_input("Valor", min_value=0.0, step=10.0)
 
@@ -78,7 +78,47 @@ elif seccion == "Ejercicio 1":
         st.info("Aún no hay movimientos registrados.")
 
 elif seccion == "Ejercicio 2":
-    st.write("Estás en el Ejercicio 2")
+    st.title("Ejercicio 2 – Registro con NumPy, arrays y DataFrame")
+    
+    st.markdown("Este módulo permite registrar productos y calcular el total de ventas utilizando arreglos de NumPy y convirtiéndolos a un DataFrame.")
+
+    if "registros_productos" not in st.session_state:
+        st.session_state.registros_productos = []
+
+    prod_nombre = st.text_input("Nombre del producto")
+    prod_categoria = st.selectbox("Categoría", ["Tecnología", "Oficina", "Hogar", "Otros"])
+    prod_precio = st.number_input("Precio unitario", min_value=0.0, step=1.0)
+    prod_cantidad = st.number_input("Cantidad", min_value=1, step=1)
+
+    if st.button("Agregar registro"):
+        if prod_nombre.strip():
+            total_calculado = prod_precio * prod_cantidad
+            st.session_state.registros_productos.append({
+                "Producto": prod_nombre,
+                "Categoría": prod_categoria,
+                "Precio": prod_precio,
+                "Cantidad": prod_cantidad,
+                "Total": total_calculado
+            })
+            st.success(f"Producto '{prod_nombre}' registrado correctamente.")
+
+    if len(st.session_state.registros_productos) > 0:
+        # Uso de NumPy arrays como exige la guía
+        lista_precios = np.array([r["Precio"] for r in st.session_state.registros_productos])
+        lista_cantidades = np.array([r["Cantidad"] for r in st.session_state.registros_productos])
+        lista_totales = np.array([r["Total"] for r in st.session_state.registros_productos])
+
+        st.markdown("### Tabla de registros actualizada")
+        df_productos = pd.DataFrame(st.session_state.registros_productos)
+        st.dataframe(df_productos)
+
+        st.write(f"**Monto total general en inventario/ventas:** S/. {np.sum(lista_totales):,.2f}")
+
+        if st.button("Limpiar registros de productos"):
+            st.session_state.registros_productos = []
+            st.rerun()
+    else:
+        st.info("Aún no hay productos registrados.")
 
 elif seccion == "Ejercicio 3":
     st.write("Estás en el Ejercicio 3")
