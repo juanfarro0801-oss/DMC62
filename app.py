@@ -174,32 +174,41 @@ elif seccion == "Ejercicio 4":
 # --- 1. CREAR ---
     with tab_crear:
         st.subheader("Registrar nuevo producto en inventario")
-        
-        with st.form("form_crear_producto", clear_on_submit=True):
-            nombre_prod = st.text_input("Nombre del producto")
-            costo_prod = st.number_input("Costo unitario", min_value=0.0, value=10.0, step=1.0)
-            precio_prod = st.number_input("Precio unitario", min_value=0.0, value=15.0, step=1.0)
-            stock_act = st.number_input("Stock actual", min_value=0, value=50, step=1)
-            stock_min = st.number_input("Stock mínimo", min_value=0, value=10, step=1)
 
-            btn_guardar = st.form_submit_button("Guardar Producto")
+        # Inicializar un contador de versión para limpiar los inputs cambiando su key
+        if "form_version" not in st.session_state:
+            st.session_state.form_version = 0
 
-            if btn_guardar:
-                if nombre_prod.strip():
-                    try:
-                        # Instanciar la clase de la librería externa
-                        producto_obj = lc.InventarioProducto(nombre_prod, costo_prod, precio_prod, stock_act, stock_min)
-                        
-                        # Guardar el objeto y su resumen en el session_state
-                        st.session_state.inventario_crud.append({
-                            "objeto": producto_obj,
-                            **producto_obj.resumen()
-                        })
-                        st.success(f"Producto '{nombre_prod}' creado correctamente.")
-                    except Exception as e:
-                        st.error(f"Error al validar los datos: {e}")
-                else:
-                    st.warning("El nombre del producto no puede estar vacío.")
+        v = st.session_state.form_version
+
+        # Usamos la versión en la key para que al cambiarla se reinicien los widgets con sus valores por defecto
+        nombre_prod = st.text_input("Nombre del producto", key=f"crear_nombre_{v}")
+        costo_prod = st.number_input("Costo unitario", min_value=0.0, value=10.0, step=1.0, key=f"crear_costo_{v}")
+        precio_prod = st.number_input("Precio unitario", min_value=0.0, value=15.0, step=1.0, key=f"crear_precio_{v}")
+        stock_act = st.number_input("Stock actual", min_value=0, value=50, step=1, key=f"crear_stock_{v}")
+        stock_min = st.number_input("Stock mínimo", min_value=0, value=10, step=1, key=f"crear_min_{v}")
+
+        if st.button("Guardar Producto"):
+            if nombre_prod.strip():
+                try:
+                    # Instanciar la clase de la librería externa
+                    producto_obj = lc.InventarioProducto(nombre_prod, costo_prod, precio_prod, stock_act, stock_min)
+                    
+                    # Guardar el objeto y su resumen en el session_state
+                    st.session_state.inventario_crud.append({
+                        "objeto": producto_obj,
+                        **producto_obj.resumen()
+                    })
+                    
+                    st.success(f"Producto '{nombre_prod}' creado correctamente.")
+                    
+                    # Incrementamos la versión para forzar a Streamlit a recrear los inputs limpios y con valores por defecto
+                    st.session_state.form_version += 1
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Error al validar los datos: {e}")
+            else:
+                st.warning("El nombre del producto no puede estar vacío.")
 
     # --- 2. LEER ---
     with tab_leer:
