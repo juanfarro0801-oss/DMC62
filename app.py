@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+import libreria_funciones_proyecto1 as lf
 
 st.title("Especialización Python for Analytics")
 st.sidebar.title("Parámetros")
@@ -122,7 +123,41 @@ elif seccion == "Ejercicio 2":
         st.info("Aún no hay productos registrados.")
 
 elif seccion == "Ejercicio 3":
-    st.write("Estás en el Ejercicio 3")
+    st.title("Ejercicio 3 – Uso de funciones desde una librería externa")
+    st.markdown("Este módulo permite calcular la cuota de un préstamo bajo el sistema francés utilizando la librería externa.")
+
+    # Inicializar el histórico de resultados en la sesión
+    if "historico_prestamo" not in st.session_state:
+        st.session_state.historico_prestamo = []
+
+    # Widgets para ingresar los parámetros de tu función
+    monto = st.number_input("Ingrese el monto del préstamo", min_value=0.0, value=10000.0, step=500.0)
+    tasa_anual_pct = st.number_input("Ingrese la tasa de interés anual (%)", min_value=0.0, value=12.0, step=0.5)
+    plazo_meses = st.number_input("Ingrese el plazo en meses", min_value=1, value=12, step=1)
+
+    # Botón para ejecutar la función de la librería
+    if st.button("Calcular Préstamo"):
+        # Ejecución usando el estilo del profesor (lf.)
+        resultado = lf.calcular_cuota_prestamo_frances(monto, tasa_anual_pct, int(plazo_meses))
+        
+        # Mostrar resultado en pantalla
+        st.write("El resultado de tu cálculo es:", resultado)
+        
+        # Guardar en el histórico de resultados (DataFrame)
+        st.session_state.historico_prestamo.append({
+            "Monto": monto,
+            "Tasa Anual (%)": tasa_anual_pct,
+            "Plazo (meses)": plazo_meses,
+            "Cuota Mensual": resultado["cuota_mensual"],
+            "Total Pagado": resultado["total_pagado"],
+            "Interés Total": resultado["interes_total"]
+        })
+
+    # Mostrar la tabla histórica de resultados obtenidos
+    if len(st.session_state.historico_prestamo) > 0:
+        st.markdown("### Tabla histórica de resultados obtenidos")
+        df_historico = pd.DataFrame(st.session_state.historico_prestamo)
+        st.dataframe(df_historico)
 
 elif seccion == "Ejercicio 4":
     st.write("Estás en el Ejercicio 4")
