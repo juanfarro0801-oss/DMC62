@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import libreria_funciones_proyecto1 as lf
+import libreria_clases_proyecto1 as lc
 
 st.title("Especialización Python for Analytics")
 st.sidebar.title("Parámetros")
@@ -105,7 +106,7 @@ elif seccion == "Ejercicio 2":
             st.success(f"Producto '{prod_nombre}' registrado correctamente.")
 
     if len(st.session_state.registros_productos) > 0:
-        # Uso de NumPy arrays como exige la guía
+        # Uso de NumPy
         lista_precios = np.array([r["Precio"] for r in st.session_state.registros_productos])
         lista_cantidades = np.array([r["Cantidad"] for r in st.session_state.registros_productos])
         lista_totales = np.array([r["Total"] for r in st.session_state.registros_productos])
@@ -137,7 +138,7 @@ elif seccion == "Ejercicio 3":
 
     # Botón para ejecutar la función de la librería
     if st.button("Calcular Préstamo"):
-        # Ejecución usando el estilo del profesor (lf.)
+        # Ejecución 
         resultado = lf.calcular_cuota_prestamo_frances(monto, tasa_anual_pct, int(plazo_meses))
         
         # Mostrar resultado en pantalla
@@ -160,4 +161,103 @@ elif seccion == "Ejercicio 3":
         st.dataframe(df_historico)
 
 elif seccion == "Ejercicio 4":
-    st.write("Estás en el Ejercicio 4")
+    st.title("Ejercicio 4 – Uso de clases con CRUD")
+    st.markdown("Este módulo gestiona el inventario de productos utilizando la clase `InventarioProducto` con operaciones CRUD completas.")
+
+    # Inicializar la lista en session_state para guardar los objetos o diccionarios
+    if "inventario_crud" not in st.session_state:
+        st.session_state.inventario_crud = []
+
+    # Pestañas opcionales para organizar el CRUD de manera limpia
+    tab_crear, tab_leer, tab_actualizar, tab_eliminar = st.tabs(["Crear", "Leer", "Actualizar", "Eliminar"])
+
+    # --- 1. CREAR ---
+    with tab_crear:
+        st.subheader("Registrar nuevo producto en inventario")
+        nombre_prod = st.text_input("Nombre del producto", key="crear_nombre")
+        costo_prod = st.number_input("Costo unitario", min_value=0.0, value=10.0, step=1.0, key="crear_costo")
+        precio_prod = st.number_input("Precio unitario", min_value=0.0, value=15.0, step=1.0, key="crear_precio")
+        stock_act = st.number_input("Stock actual", min_value=0, value=50, step=1, key="crear_stock")
+        stock_min = st.number_input("Stock mínimo", min_value=0, value=10, step=1, key="crear_min")
+
+        if st.button("Guardar Producto"):
+            if nombre_prod.strip():
+                try:
+                    # Instanciar la clase de la librería
+                    producto_obj = lc.InventarioProducto(nombre_prod, costo_prod, precio_prod, stock_act, stock_min)
+                    
+                    # Guardar el objeto y su resumen en el session_state
+                    st.session_state.inventario_crud.append({
+                        "objeto": producto_obj,
+                        **producto_obj.resumen()
+                    })
+                    st.success(f"Producto '{nombre_prod}' creado correctamente.")
+                except Exception as e:
+                    st.error(f"Error al validar los datos: {e}")
+            else:
+                st.warning("El nombre del producto no puede estar vacío.")
+
+    # --- 2. LEER ---
+    with tab_leer:
+        st.subheader("Visualización del Inventario")
+        if len(st.session_state.inventario_crud) > 0:
+            # Extraer solo los resúmenes para mostrar en el DataFrame
+            datos_tabla = [
+                {
+                    "Producto": item["producto"],
+                    "Stock Actual": item["stock_actual"],
+                    "Valor Inventario": item["valor_inventario"],
+                    "Margen Unitario": item["margen_unitario"],
+                    "Margen (%)": item["margen_pct"],
+                    "Necesita Reposición": item["necesita_reposicion"]
+                }
+                for item in st.session_state.inventario_crud
+            ]
+            st.dataframe(datos_tabla)
+        else:
+            st.info("Aún no hay productos registrados en el inventario.")
+
+    # --- 3. ACTUALIZAR ---
+    with tab_actualizar:
+        st.subheader("Actualizar datos de un producto")
+        if len(st.session_state.inventario_crud) > 0:
+            nombres_productos = [item["producto"] for item in st.session_state.inventario_crud]
+            prod_seleccionado = st.selectbox("Seleccione el producto a actualizar", nombres_productos, key="select_act")
+
+            # Buscar el índice del producto seleccionado
+            idx = nombres_productos.index(prod_seleccionado)
+            prod_actual = st.session_state.inventario_crud[idx]
+
+            nuevo_costo = st.number_input("Nuevo costo unitario", min_value=0.0, value=float(prod_actual["objeto"].costo_unitario), step=1.0, key="act_costo")
+            nuevo_precio = st.number_input("Nuevo precio unitario", min_value=0.0, value=float(prod_actual["objeto"].precio_unitario), step=1.0, key="act_precio")
+            nuevo_stock = st.number_input("Nuevo stock actual", min_value=0, value=int(prod_actual["objeto"].stock_actual), step=1, key="act_stock")
+            nuevo_min = st.number_input("Nuevo stock mínimo", min_value=0, value=int(prod_actual["objeto"].stock_minimo), step=1, key="act_min")
+
+            if st.button("Actualizar Producto"):
+                try:
+                    # Reinstanciar la clase con los nuevos valores actualizados
+                    producto_actualizado = lc.InventarioProducto(prod_seleccionado, nuevo_costo, nuevo_precio, nuevo_stock, nuevo_min)
+                    st.session_state.inventario_crud[idx] = {
+                        "objeto": producto_actualizado,
+                        **producto_actualizado.resumen()
+                    }
+                    st.success(f"Producto '{prod_seleccionado}' actualizado con éxito.")
+                except Exception as e:
+                    st.error(f"Error al actualizar: {e}")
+        else:
+            st.info("No hay productos disponibles para actualizar.")
+
+    # --- 4. ELIMINAR ---
+    with tab_eliminar:
+        st.subheader("Eliminar un producto")
+        if len(st.session_state.inventario_crud) > 0:
+            nombres_productos_del = [item["producto"] for item in st.session_state.inventario_crud]
+            prod_a_eliminar = st.selectbox("Seleccione el producto a eliminar", nombres_productos_del, key="select_del")
+
+            if st.button("Eliminar Producto"):
+                idx_del = nombres_productos_del.index(prod_a_eliminar)
+                st.session_state.inventario_crud.pop(idx_del)
+                st.success(f"Producto '{prod_a_eliminar}' eliminado correctamente.")
+                st.rerun()
+        else:
+            st.info("No hay productos para eliminar.")
