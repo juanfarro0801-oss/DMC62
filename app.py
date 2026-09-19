@@ -183,10 +183,10 @@ elif seccion == "Ejercicio 4":
 
         # Usamos la versión en la key para que al cambiarla se reinicien los widgets con sus valores por defecto
         nombre_prod = st.text_input("Nombre del producto", key=f"crear_nombre_{v}")
-        costo_prod = st.number_input("Costo unitario", min_value=0.0, value=10.0, step=1.0, key=f"crear_costo_{v}")
-        precio_prod = st.number_input("Precio unitario", min_value=0.0, value=15.0, step=1.0, key=f"crear_precio_{v}")
-        stock_act = st.number_input("Stock actual", min_value=0, value=50, step=1, key=f"crear_stock_{v}")
-        stock_min = st.number_input("Stock mínimo", min_value=0, value=10, step=1, key=f"crear_min_{v}")
+        costo_prod = st.number_input("Costo unitario", min_value=0.0, value=0.0, step=1.0, key=f"crear_costo_{v}")
+        precio_prod = st.number_input("Precio unitario", min_value=0.0, value=0.0, step=1.0, key=f"crear_precio_{v}")
+        stock_act = st.number_input("Stock actual", min_value=0, value=0, step=1, key=f"crear_stock_{v}")
+        stock_min = st.number_input("Stock mínimo", min_value=0, value=0, step=1, key=f"crear_min_{v}")
 
         if st.button("Guardar Producto"):
             if nombre_prod.strip():
