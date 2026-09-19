@@ -1,5 +1,6 @@
 import streamlit as st
 import numpy as np
+import pandas as pd
 
 st.title("Especialización Python for Analytics")
 st.sidebar.title("Parámetros")
@@ -40,7 +41,6 @@ elif seccion == "Ejercicio 1":
     tipo = st.selectbox("Tipo de movimiento", ["Ingreso", "Gasto"])
     valor = st.number_input("Valor", min_value=0.0, step=10.0)
 
-    # Botón para agregar movimientos
     if st.button("Agregar movimiento"):
         if concepto.strip():
             st.session_state.movimientos.append({
@@ -49,23 +49,19 @@ elif seccion == "Ejercicio 1":
                 "Valor": valor
             })
 
-    # Mostrar la tabla de movimientos
     if len(st.session_state.movimientos) > 0:
         st.markdown("### Tabla de movimientos registrados")
         st.dataframe(st.session_state.movimientos)
 
-        # Cálculos de totales y saldo final
         total_ingresos = sum(m["Valor"] for m in st.session_state.movimientos if m["Tipo"] == "Ingreso")
         total_gastos = sum(m["Valor"] for m in st.session_state.movimientos if m["Tipo"] == "Gasto")
         saldo_final = total_ingresos - total_gastos
 
-        # Resultado final del flujo de caja con st.metric
         col1, col2, col3 = st.columns(3)
         col1.metric("Total Ingresos", f"S/. {total_ingresos:,.2f}")
         col2.metric("Total Gastos", f"S/. {total_gastos:,.2f}")
         col3.metric("Saldo Final", f"S/. {saldo_final:,.2f}")
 
-        # Indicador de estado del flujo de caja
         if saldo_final >= 0:
             st.success("El flujo de caja está: **a favor**")
         else:
