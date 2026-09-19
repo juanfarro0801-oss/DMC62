@@ -217,31 +217,33 @@ elif seccion == "Ejercicio 4":
         else:
             st.info("Aún no hay productos registrados en el inventario.")
 
-    # --- 3. ACTUALIZAR ---
+# --- 3. ACTUALIZAR ---
     with tab_actualizar:
         st.subheader("Actualizar datos de un producto")
         if len(st.session_state.inventario_crud) > 0:
             nombres_productos = [item["producto"] for item in st.session_state.inventario_crud]
             prod_seleccionado = st.selectbox("Seleccione el producto a actualizar", nombres_productos, key="select_act")
 
-            # Buscar el índice del producto seleccionado
+            # Buscar el índice y el objeto del producto seleccionado
             idx = nombres_productos.index(prod_seleccionado)
-            prod_actual = st.session_state.inventario_crud[idx]
+            prod_actual = st.session_state.inventario_crud[idx]["objeto"]
 
-            nuevo_costo = st.number_input("Nuevo costo unitario", min_value=0.0, value=float(prod_actual["objeto"].costo_unitario), step=1.0, key="act_costo")
-            nuevo_precio = st.number_input("Nuevo precio unitario", min_value=0.0, value=float(prod_actual["objeto"].precio_unitario), step=1.0, key="act_precio")
-            nuevo_stock = st.number_input("Nuevo stock actual", min_value=0, value=int(prod_actual["objeto"].stock_actual), step=1, key="act_stock")
-            nuevo_min = st.number_input("Nuevo stock mínimo", min_value=0, value=int(prod_actual["objeto"].stock_minimo), step=1, key="act_min")
+            # Usamos los atributos actuales del objeto como valor por defecto en los inputs
+            nuevo_costo = st.number_input("Nuevo costo unitario", min_value=0.0, value=float(prod_actual.costo_unitario), step=1.0, key=f"act_costo_{prod_seleccionado}")
+            nuevo_precio = st.number_input("Nuevo precio unitario", min_value=0.0, value=float(prod_actual.precio_unitario), step=1.0, key=f"act_precio_{prod_seleccionado}")
+            nuevo_stock = st.number_input("Nuevo stock actual", min_value=0, value=int(prod_actual.stock_actual), step=1, key=f"act_stock_{prod_seleccionado}")
+            nuevo_min = st.number_input("Nuevo stock mínimo", min_value=0, value=int(prod_actual.stock_minimo), step=1, key=f"act_min_{prod_seleccionado}")
 
             if st.button("Actualizar Producto"):
                 try:
-                    # Reinstanciar la clase con los nuevos valores actualizados
+                    # Reinstanciar la clase con los nuevos valores
                     producto_actualizado = lc.InventarioProducto(prod_seleccionado, nuevo_costo, nuevo_precio, nuevo_stock, nuevo_min)
                     st.session_state.inventario_crud[idx] = {
                         "objeto": producto_actualizado,
                         **producto_actualizado.resumen()
                     }
                     st.success(f"Producto '{prod_seleccionado}' actualizado con éxito.")
+                    st.rerun()
                 except Exception as e:
                     st.error(f"Error al actualizar: {e}")
         else:
