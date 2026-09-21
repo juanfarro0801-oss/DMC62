@@ -133,8 +133,8 @@ elif seccion == "Ejercicio 3":
 
     # Widgets para ingresar los parámetros
     monto = st.number_input("Ingrese el monto del préstamo", min_value=0.0, value=0.0, step=500.0)
-    tasa_anual_pct = st.number_input("Ingrese la tasa de interés anual (%)", min_value=0.0, value=12.0, step=0.5)
-    plazo_meses = st.number_input("Ingrese el plazo en meses", min_value=1, value=12, step=1)
+    tasa_anual_pct = st.number_input("Ingrese la tasa de interés anual (%)", min_value=0.0, value=0.0, step=0.5)
+    plazo_meses = st.number_input("Ingrese el plazo en meses", min_value=1, value=0,0 step=1)
 
     # Botón para ejecutar la función de la librería
     if st.button("Calcular Préstamo"):
