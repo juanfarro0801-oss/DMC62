@@ -131,8 +131,8 @@ elif seccion == "Ejercicio 3":
     if "historico_prestamo" not in st.session_state:
         st.session_state.historico_prestamo = []
 
-    # Widgets para ingresar los parámetros de tu función
-    monto = st.number_input("Ingrese el monto del préstamo", min_value=0.0, value=10000.0, step=500.0)
+    # Widgets para ingresar los parámetros
+    monto = st.number_input("Ingrese el monto del préstamo", min_value=0.0, value=0.0, step=500.0)
     tasa_anual_pct = st.number_input("Ingrese la tasa de interés anual (%)", min_value=0.0, value=12.0, step=0.5)
     plazo_meses = st.number_input("Ingrese el plazo en meses", min_value=1, value=12, step=1)
 
@@ -141,10 +141,10 @@ elif seccion == "Ejercicio 3":
         # Ejecución 
         resultado = lf.calcular_cuota_prestamo_frances(monto, tasa_anual_pct, int(plazo_meses))
         
-        # Mostrar resultado en pantalla
+        # Mostrar resultado
         st.write("El resultado de tu cálculo es:", resultado)
         
-        # Guardar en el histórico de resultados (DataFrame)
+        # Guardar en el histórico de resultados
         st.session_state.historico_prestamo.append({
             "Monto": monto,
             "Tasa Anual (%)": tasa_anual_pct,
